@@ -54,6 +54,12 @@ helm install prometheus prometheus-community/prometheus \
     --set alertmanager.persistentVolume.storageClass="gp2" \
     --set server.persistentVolume.storageClass="gp2"
 ```
+alternative:
+```shell
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+kubectl create ns prometheus
+```
+
 
 check the status of prometheus:
 ```shell
@@ -210,5 +216,49 @@ echo $SERVICE_ACCOUNT_IAM_ROLE_ARN
 # Doing this with eksctl is the easier and best approach.
 #
 eksctl utils associate-iam-oidc-provider --cluster $CLUSTER_NAME --approve
+
+```
+
+Create a file called amp_ingest_override_values.yaml with the following content in it.
+```yaml
+serviceAccounts:
+  ## Disable alert manager roles
+  ##
+  server:
+        name: "iamproxy-service-account"
+  alertmanager:
+    create: false
+
+  ## Disable pushgateway
+  ##
+  pushgateway:
+    create: false
+
+server:
+  remoteWrite:
+    -
+      queue_config:
+        max_samples_per_send: 1000
+        max_shards: 200
+        capacity: 2500
+
+  ## Use a statefulset instead of a deployment for resiliency
+  ##
+  statefulSet:
+    enabled: true
+
+  ## Store blocks locally for short time period only
+  ##
+  retention: 1h
+  
+## Disable alert manager
+##
+alertmanager:
+  enabled: false
+
+## Disable pushgateway
+##
+pushgateway:
+  enabled: false
 
 ```
