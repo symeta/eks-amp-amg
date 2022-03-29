@@ -1,240 +1,67 @@
-# configure amp
-install helm on the eks cluster. the commands are as below:
-```shell
-# add prometheus Helm repo
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+# configure amg
+## Prerequisite
+AMG requires AWS SSO enabled in your account. AWS SSO is used as the authentication provider to sign into the AMG workspace.
 
-# add grafana Helm repo
-helm repo add grafana https://grafana.github.io/helm-charts
+Follow the steps below to enable AWS SSO in your account
+* Sign in to the AWS Management Console with your AWS Organizations management account credentials.
+* Open the AWS SSO console.
+* Choose Enable AWS SSO.
 
-```
+If you have not yet set up AWS Organizations, you will be prompted to create an organization. Choose Create AWS organization to complete this process.
 
-install the prometheus server and create a namespace named prometheus:
-```shell
-kubectl create namespace prometheus
+Now go ahead and create a new AWS SSO user that we will use to provide access to the AMG workspace later.
 
-helm install prometheus prometheus-community/prometheus \
-    --namespace prometheus \
-    --set alertmanager.persistentVolume.storageClass="gp2" \
-    --set server.persistentVolume.storageClass="gp2"
-```
-alternative:
-```shell
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-kubectl create ns prometheus
-```
+## Create AMG workspace
+Go to the AMG console and provide a workspace name as shown below
+![image](https://user-images.githubusercontent.com/97269758/160515632-e009d827-9078-4b79-8c29-583378a8ec51.png)
+Choose Service managed in the Configure Settings page and click Next. Choosing this option will allow the wizard to automatically provision the permissions for you based on the AWS services we will choose later on.
+
+In the Service managed permission settings screen, you can choose to configure Grafana to monitor resources in the same account where you are creating the workspace or allow Grafana to reach into multiple AWS accounts by choosing the Organization option and providing the necessary OU IDs.
+![image](https://user-images.githubusercontent.com/97269758/160515690-e73a6f28-ffec-4e33-9550-0486e95d1212.png)
+
+We will simply leave the option to Current account and select all the Data sources and the Notification channels. Click Next
+![image](https://user-images.githubusercontent.com/97269758/160515751-1b7c132c-7502-4542-985b-6a60c64ab75e.png)
+
+In the Review screen, take a look at the options and click on Create workspace
+## Add Users
+Once the AMG workspace turns to ACTIVE, click on Assign user and select the SSO user created in previously. Click Assign user
+![image](https://user-images.githubusercontent.com/97269758/160515876-358e3c91-9e62-4f46-959b-90f661ebf902.png)
+
+By default, all newly assigned users are added as Viewers that only provides read-only permissions on Grafana. To make the user as Administrator, select the user under Users and select Make admin. Now you should see that the user is an Administrator.
+![image](https://user-images.githubusercontent.com/97269758/160515905-4f1744c1-125b-4fd1-b423-59f94a65013b.png)
+
+## Login to AMG workspace
+Click on the Grafana workspace URL in the Summary section
+![image](https://user-images.githubusercontent.com/97269758/160515952-32fb2fb4-0b78-4b19-87b3-a641f757907f.png)
+
+This will take you to the AWS SSO login screen, where you can provide the UserId and Password that you created as part of prerequisites.
+![image](https://user-images.githubusercontent.com/97269758/160515988-94635310-0dfd-45b6-aee0-94e203fee8a6.png)
+
+## Configure AMP data source
+Select AWS services from the AWS logo on the left navigation bar, which will take you to the screen as shown below showing all the AWS data sources available for you to choose from.
+![image](https://user-images.githubusercontent.com/97269758/160516046-bb3a3a6e-281f-4b21-87c3-e46510e50ad3.png)
+
+Select Prometheus from the list, select the AWS Region where you created the AMP workspace. This will automatically populate the AMP workspaces available in that Region as shown below.
+![image](https://user-images.githubusercontent.com/97269758/160516160-8b7a0f0e-f525-4ede-a997-f0f797e06a0a.png)
+
+Simply select the AMP workspace from the list and click Add data sources. Once added you will able to see that the AMP data source is authenticated through SigV4 protocol. Grafana (7.3.5 and above) has the AWS SigV4 proxy built-in as a plugin which makes this possible.
+![image](https://user-images.githubusercontent.com/97269758/160516217-c1f77567-b70c-45f4-ac29-5692c5d24c19.png)
+
+Query Metrics
+In this section we will be importing a public Grafana dashboard that allows us to visualize metrics from a Kubernetes environment.
+
+Go to the plus sign on the left navigation bar and select Import.
+
+![image](https://user-images.githubusercontent.com/97269758/160516250-9433c136-4e8c-4136-9cc2-f1a988cdd28a.png)
 
 
-check the status of prometheus:
-```shell
-kubectl get all -n prometheus
-```
-In order to access the Prometheus server URL, we are going to use the kubectl port-forward command to access the application. In Cloud9, run:
-```shell
-kubectl port-forward -n prometheus deploy/prometheus-server 8080:9090
-```
-In your Cloud9 environment, click Tools / Preview / Preview Running Application. Scroll to the end of the URL and append:
-```shell
-/targets
-```
-In the web UI, you can see all the targets and metrics being monitored by Prometheus:
+In the Import screen, type 3119 in Import via grafana.com textbox and click Load
 
-![Screen Shot 2022-03-29 at 9 26 20 AM](https://user-images.githubusercontent.com/97269758/160513992-bcb100e2-5908-47b7-aa83-6f8524c12da0.png)
+Select the AMP data source in the drop down at the bottom and click on Import
 
-use aws cli to create the managed prometheus workspace using the following command:
-```shell
-aws amp create-workspace --alias demo-prometheus --region us-west-2
-```
 
-The shell script shown below can be used to execute the following actions after substituting the placeholder variable YOUR_EKS_CLUSTER_NAME with the name of your Amazon EKS cluster.
+Once complete, you will be able to see the Grafana dashboard showing metrics from the EKS cluster through AMP data source as shown below.
 
-* Creates an IAM role with an IAM policy that has permissions to remote-write into an AMP workspace
-* Creates a Kubernetes service account that is annotated with the IAM role
-* Creates a trust relationship between the IAM role and the OIDC provider hosted in your Amazon EKS cluster
+![image](https://user-images.githubusercontent.com/97269758/160516326-2b80430d-dcbd-4c36-8545-7e151cc862c5.png)
 
-```shell
-##!/bin/bash
-CLUSTER_NAME=YOUR_EKS_CLUSTER_NAME
-AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
-OIDC_PROVIDER=$(aws eks describe-cluster --name $CLUSTER_NAME --query "cluster.identity.oidc.issuer" --output text | sed -e "s/^https:\/\///")
-
-PROM_SERVICE_ACCOUNT_NAMESPACE=prometheus
-GRAFANA_SERVICE_ACCOUNT_NAMESPACE=grafana
-SERVICE_ACCOUNT_NAME=iamproxy-service-account
-SERVICE_ACCOUNT_IAM_ROLE=EKS-AMP-ServiceAccount-Role
-SERVICE_ACCOUNT_IAM_ROLE_DESCRIPTION="IAM role to be used by a K8s service account with write access to AMP"
-SERVICE_ACCOUNT_IAM_POLICY=AWSManagedPrometheusWriteAccessPolicy
-SERVICE_ACCOUNT_IAM_POLICY_ARN=arn:aws:iam::$AWS_ACCOUNT_ID:policy/$SERVICE_ACCOUNT_IAM_POLICY
-#
-# Setup a trust policy designed for a specific combination of K8s service account and namespace to sign in from a Kubernetes cluster which hosts the OIDC Idp.
-# If the IAM role already exists, then add this new trust policy to the existing trust policy
-#
-echo "Creating a new trust policy"
-read -r -d '' NEW_TRUST_RELATIONSHIP <<EOF
- [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Federated": "arn:aws:iam::${AWS_ACCOUNT_ID}:oidc-provider/${OIDC_PROVIDER}"
-      },
-      "Action": "sts:AssumeRoleWithWebIdentity",
-      "Condition": {
-        "StringEquals": {
-          "${OIDC_PROVIDER}:sub": "system:serviceaccount:${GRAFANA_SERVICE_ACCOUNT_NAMESPACE}:${SERVICE_ACCOUNT_NAME}"
-        }
-      }
-    },
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Federated": "arn:aws:iam::${AWS_ACCOUNT_ID}:oidc-provider/${OIDC_PROVIDER}"
-      },
-      "Action": "sts:AssumeRoleWithWebIdentity",
-      "Condition": {
-        "StringEquals": {
-          "${OIDC_PROVIDER}:sub": "system:serviceaccount:${PROM_SERVICE_ACCOUNT_NAMESPACE}:${SERVICE_ACCOUNT_NAME}"
-        }
-      }
-    }
-  ]
-EOF
-#
-# Get the old trust policy, if one exists, and append it to the new trust policy
-#
-OLD_TRUST_RELATIONSHIP=$(aws iam get-role --role-name $SERVICE_ACCOUNT_IAM_ROLE --query 'Role.AssumeRolePolicyDocument.Statement[]' --output json)
-COMBINED_TRUST_RELATIONSHIP=$(echo $OLD_TRUST_RELATIONSHIP $NEW_TRUST_RELATIONSHIP | jq -s add)
-echo "Appending to the existing trust policy"
-read -r -d '' TRUST_POLICY <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": ${COMBINED_TRUST_RELATIONSHIP}
-}
-EOF
-echo "${TRUST_POLICY}" > TrustPolicy.json
-#
-# Setup the permission policy grants write permissions for all AWS StealFire workspaces
-#
-read -r -d '' PERMISSION_POLICY <<EOF
-{
-   "Version":"2012-10-17",
-   "Statement":[
-      {
-         "Effect":"Allow",
-         "Action":[
-            "aps:RemoteWrite",
-            "aps:QueryMetrics",
-            "aps:GetSeries",
-            "aps:GetLabels",
-            "aps:GetMetricMetadata"
-         ],
-         "Resource":"*"
-      }
-   ]
-}
-EOF
-echo "${PERMISSION_POLICY}" > PermissionPolicy.json
-
-#
-# Create an IAM permission policy to be associated with the role, if the policy does not already exist
-#
-SERVICE_ACCOUNT_IAM_POLICY_ID=$(aws iam get-policy --policy-arn $SERVICE_ACCOUNT_IAM_POLICY_ARN --query 'Policy.PolicyId' --output text)
-if [ "$SERVICE_ACCOUNT_IAM_POLICY_ID" = "" ]; 
-then
-  echo "Creating a new permission policy $SERVICE_ACCOUNT_IAM_POLICY"
-  aws iam create-policy --policy-name $SERVICE_ACCOUNT_IAM_POLICY --policy-document file://PermissionPolicy.json 
-else
-  echo "Permission policy $SERVICE_ACCOUNT_IAM_POLICY already exists"
-fi
-
-#
-# If the IAM role already exists, then just update the trust policy.
-# Otherwise create one using the trust policy and permission policy
-#
-SERVICE_ACCOUNT_IAM_ROLE_ARN=$(aws iam get-role --role-name $SERVICE_ACCOUNT_IAM_ROLE --query 'Role.Arn' --output text)
-if [ "$SERVICE_ACCOUNT_IAM_ROLE_ARN" = "" ]; 
-then
-  echo "$SERVICE_ACCOUNT_IAM_ROLE role does not exist. Creating a new role with a trust and permission policy"
-  #
-  # Create an IAM role for Kubernetes service account 
-  #
-  SERVICE_ACCOUNT_IAM_ROLE_ARN=$(aws iam create-role \
-  --role-name $SERVICE_ACCOUNT_IAM_ROLE \
-  --assume-role-policy-document file://TrustPolicy.json \
-  --description "$SERVICE_ACCOUNT_IAM_ROLE_DESCRIPTION" \
-  --query "Role.Arn" --output text)
-  #
-  # Attach the trust and permission policies to the role
-  #
-  aws iam attach-role-policy --role-name $SERVICE_ACCOUNT_IAM_ROLE --policy-arn $SERVICE_ACCOUNT_IAM_POLICY_ARN  
-else
-  echo "$SERVICE_ACCOUNT_IAM_ROLE_ARN role already exists. Updating the trust policy"
-  #
-  # Update the IAM role for Kubernetes service account with a with the new trust policy
-  #
-  aws iam update-assume-role-policy --role-name $SERVICE_ACCOUNT_IAM_ROLE --policy-document file://TrustPolicy.json
-fi
-echo $SERVICE_ACCOUNT_IAM_ROLE_ARN
-
-# EKS cluster hosts an OIDC provider with a public discovery endpoint.
-# Associate this Idp with AWS IAM so that the latter can validate and accept the OIDC tokens issued by Kubernetes to service accounts.
-# Doing this with eksctl is the easier and best approach.
-#
-eksctl utils associate-iam-oidc-provider --cluster $CLUSTER_NAME --approve
-
-```
-
-Create a file called amp_ingest_override_values.yaml with the following content in it.
-```yaml
-serviceAccounts:
-  ## Disable alert manager roles
-  ##
-  server:
-        name: "iamproxy-service-account"
-  alertmanager:
-    create: false
-
-  ## Disable pushgateway
-  ##
-  pushgateway:
-    create: false
-
-server:
-  remoteWrite:
-    -
-      queue_config:
-        max_samples_per_send: 1000
-        max_shards: 200
-        capacity: 2500
-
-  ## Use a statefulset instead of a deployment for resiliency
-  ##
-  statefulSet:
-    enabled: true
-
-  ## Store blocks locally for short time period only
-  ##
-  retention: 1h
-  
-## Disable alert manager
-##
-alertmanager:
-  enabled: false
-
-## Disable pushgateway
-##
-pushgateway:
-  enabled: false
-
-```
-
-Execute the following command to install the Prometheus server configuration and configure the remoteWrite endpoint
-```sh
-export SERVICE_ACCOUNT_IAM_ROLE=EKS-AMP-ServiceAccount-Role
-export SERVICE_ACCOUNT_IAM_ROLE_ARN=$(aws iam get-role --role-name $SERVICE_ACCOUNT_IAM_ROLE --query 'Role.Arn' --output text)
-WORKSPACE_ID=$(aws amp list-workspaces --alias eks-workshop | jq .workspaces[0].workspaceId -r)
-helm install prometheus-for-amp prometheus-community/prometheus -n prometheus -f ./amp_ingest_override_values.yaml \
---set serviceAccounts.server.annotations."eks\.amazonaws\.com/role-arn"="${SERVICE_ACCOUNT_IAM_ROLE_ARN}" \
---set server.remoteWrite[0].url="https://aps-workspaces.${AWS_REGION}.amazonaws.com/workspaces/${WORKSPACE_ID}/api/v1/remote_write" \
---set server.remoteWrite[0].sigv4.region=${AWS_REGION}
-
-```
+You can also create your own custom dashboard using PromQL by creating a custom dashboard and adding a panel connecting AMP as the data source.
