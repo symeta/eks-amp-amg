@@ -19,7 +19,10 @@ sudo mv /tmp/eksctl /usr/local/bin
 ```
 eksctl version
 ```
-execute the following command to create the eks cluster
+after the eksctl tool has been successfully installed, execute the following command to create the eks cluster
 ```
-
+eksctl create cluster \
+    --name demo-eks \
+    --version 1.21 \
+    --without-nodegroup
 ```
