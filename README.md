@@ -71,3 +71,13 @@ In the web UI, you can see all the targets and metrics being monitored by Promet
 
 ![Screen Shot 2022-03-29 at 9 26 20 AM](https://user-images.githubusercontent.com/97269758/160513992-bcb100e2-5908-47b7-aa83-6f8524c12da0.png)
 
+use aws cli to create the managed prometheus workspace using the following command:
+```
+aws amp create-workspace --alias demo-prometheus --region us-west-2
+```
+
+The shell script shown below can be used to execute the following actions after substituting the placeholder variable YOUR_EKS_CLUSTER_NAME with the name of your Amazon EKS cluster.
+
+-Creates an IAM role with an IAM policy that has permissions to remote-write into an AMP workspace
+-Creates a Kubernetes service account that is annotated with the IAM role
+-Creates a trust relationship between the IAM role and the OIDC provider hosted in your Amazon EKS cluste
