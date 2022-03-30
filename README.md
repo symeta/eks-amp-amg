@@ -77,4 +77,22 @@ aws configure get default.region
 ```sh
 aws sts get-caller-identity --query Arn | grep eksworkshop-admin -q && echo "IAM role valid" || echo "IAM role NOT valid"
 ```
-
+## clone the services repos
+```sh
+cd ~/environment
+git clone https://github.com/aws-containers/ecsdemo-frontend.git
+git clone https://github.com/aws-containers/ecsdemo-nodejs.git
+git clone https://github.com/aws-containers/ecsdemo-crystal.git
+```
+## Create a CMK for the EKS cluster to use when encrypting your Kubernetes secrets
+```sh
+aws kms create-alias --alias-name alias/eksworkshop --target-key-id $(aws kms create-key --query KeyMetadata.Arn --output text)
+```
+## retrieve the ARN of the CMK to input into the create cluster command.
+```sh
+export MASTER_ARN=$(aws kms describe-key --key-id alias/eksworkshop --query KeyMetadata.Arn --output text)
+```
+## save the MASTER_ARN environment variable into the bash_profile
+```sh
+echo "export MASTER_ARN=${MASTER_ARN}" | tee -a ~/.bash_profile
+```
