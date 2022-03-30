@@ -38,9 +38,7 @@ In your Cloud9 environment, click Tools / Preview / Preview Running Application.
 /targets
 ```
 In the web UI, you can see all the targets and metrics being monitored by Prometheus:
-
-![Screen Shot 2022-03-29 at 9 26 20 AM](https://user-images.githubusercontent.com/97269758/160513992-bcb100e2-5908-47b7-aa83-6f8524c12da0.png)
-
+<img width="1014" alt="Screen Shot 2022-03-30 at 4 06 21 PM" src="https://user-images.githubusercontent.com/97269758/160797029-de4f25e1-5e30-4054-bffd-16dc29759ee1.png">
 use aws cli to create the managed prometheus workspace using the following command:
 ```shell
 aws amp create-workspace --alias demo-prometheus --region us-west-2
