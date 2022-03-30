@@ -37,4 +37,7 @@ create the eks cluster
 eksctl create cluster -f eksworkshop.yaml
 
 the creation process is shown as below. it takes around 15 minutes to finish the cluster creation
-<img width="1155" alt="Screen Shot 2022-03-30 at 3 25 50 PM" src="https://user-images.githubusercontent.com/97269758/160795667-fb426d10-3b86-4d08-a493-06092292c53d.png">
+
+<img width="1155" alt="Screen Shot 2022-03-30 at 3 25 50 PM" src="https://user-images.githubusercontent.com/97269758/160796355-c0b7b17e-fa74-4f8c-ab04-8fb3fa4191ca.png">
+
+
