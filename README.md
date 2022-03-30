@@ -14,7 +14,6 @@ helm repo add prometheus-community https://prometheus-community.github.io/helm-c
 
 # add grafana Helm repo
 helm repo add grafana https://grafana.github.io/helm-charts
-
 ```
 
 install the prometheus server and create a namespace named prometheus:
@@ -26,13 +25,6 @@ helm install prometheus prometheus-community/prometheus \
     --set alertmanager.persistentVolume.storageClass="gp2" \
     --set server.persistentVolume.storageClass="gp2"
 ```
-alternative:
-```shell
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-kubectl create ns prometheus
-```
-
-
 check the status of prometheus:
 ```shell
 kubectl get all -n prometheus
