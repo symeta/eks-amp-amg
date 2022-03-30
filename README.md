@@ -43,6 +43,7 @@ Select AWS services from the AWS logo on the left navigation bar, which will tak
 
 Select Prometheus from the list, select the AWS Region where you created the AMP workspace. This will automatically populate the AMP workspaces available in that Region as shown below.
 ![image](https://user-images.githubusercontent.com/97269758/160516160-8b7a0f0e-f525-4ede-a997-f0f797e06a0a.png)
+<img width="1407" alt="Screen Shot 2022-03-30 at 4 24 03 PM" src="https://user-images.githubusercontent.com/97269758/160797978-6cfa830b-2fb5-4c0e-a42a-1da576520fa5.png">
 
 Simply select the AMP workspace from the list and click Add data sources. Once added you will able to see that the AMP data source is authenticated through SigV4 protocol. Grafana (7.3.5 and above) has the AWS SigV4 proxy built-in as a plugin which makes this possible.
 ![image](https://user-images.githubusercontent.com/97269758/160516217-c1f77567-b70c-45f4-ac29-5692c5d24c19.png)
