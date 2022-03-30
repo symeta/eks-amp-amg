@@ -42,11 +42,10 @@ Select AWS services from the AWS logo on the left navigation bar, which will tak
 ![image](https://user-images.githubusercontent.com/97269758/160516046-bb3a3a6e-281f-4b21-87c3-e46510e50ad3.png)
 
 Select Prometheus from the list, select the AWS Region where you created the AMP workspace. This will automatically populate the AMP workspaces available in that Region as shown below.
-![image](https://user-images.githubusercontent.com/97269758/160516160-8b7a0f0e-f525-4ede-a997-f0f797e06a0a.png)
 <img width="1407" alt="Screen Shot 2022-03-30 at 4 24 03 PM" src="https://user-images.githubusercontent.com/97269758/160797978-6cfa830b-2fb5-4c0e-a42a-1da576520fa5.png">
 
 Simply select the AMP workspace from the list and click Add data sources. Once added you will able to see that the AMP data source is authenticated through SigV4 protocol. Grafana (7.3.5 and above) has the AWS SigV4 proxy built-in as a plugin which makes this possible.
-![image](https://user-images.githubusercontent.com/97269758/160516217-c1f77567-b70c-45f4-ac29-5692c5d24c19.png)
+<img width="926" alt="Screen Shot 2022-03-30 at 4 24 26 PM" src="https://user-images.githubusercontent.com/97269758/160798147-49f1584f-d6a6-4629-a7e5-fca6c3678a80.png">
 
 Query Metrics
 In this section we will be importing a public Grafana dashboard that allows us to visualize metrics from a Kubernetes environment.
@@ -57,6 +56,9 @@ Go to the plus sign on the left navigation bar and select Import.
 
 
 In the Import screen, type 3119 in Import via grafana.com textbox and click Load
+<img width="650" alt="Screen Shot 2022-03-30 at 4 26 03 PM" src="https://user-images.githubusercontent.com/97269758/160798222-6d7929bb-94bc-42f5-a58c-188259e2b7f9.png">
+
+<img width="771" alt="Screen Shot 2022-03-30 at 4 26 21 PM" src="https://user-images.githubusercontent.com/97269758/160798333-e6b16a75-178d-48c8-9049-21f20fd67983.png">
 
 Select the AMP data source in the drop down at the bottom and click on Import
 
