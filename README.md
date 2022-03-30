@@ -32,10 +32,10 @@ By default, all newly assigned users are added as Viewers that only provides rea
 
 ## Login to AMG workspace
 Click on the Grafana workspace URL in the Summary section
-![image](https://user-images.githubusercontent.com/97269758/160515952-32fb2fb4-0b78-4b19-87b3-a641f757907f.png)
+<img width="1407" alt="Screen Shot 2022-03-30 at 4 19 53 PM" src="https://user-images.githubusercontent.com/97269758/160797579-444f4646-0f30-43f7-bb49-b5a00acc5122.png">
 
 This will take you to the AWS SSO login screen, where you can provide the UserId and Password that you created as part of prerequisites.
-![image](https://user-images.githubusercontent.com/97269758/160515988-94635310-0dfd-45b6-aee0-94e203fee8a6.png)
+<img width="627" alt="Screen Shot 2022-03-30 at 4 20 08 PM" src="https://user-images.githubusercontent.com/97269758/160797655-d03fcaec-ee73-4cf7-a8ae-40fc0448b303.png">
 
 ## Configure AMP data source
 Select AWS services from the AWS logo on the left navigation bar, which will take you to the screen as shown below showing all the AWS data sources available for you to choose from.
