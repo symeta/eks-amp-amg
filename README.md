@@ -96,3 +96,19 @@ export MASTER_ARN=$(aws kms describe-key --key-id alias/eksworkshop --query KeyM
 ```sh
 echo "export MASTER_ARN=${MASTER_ARN}" | tee -a ~/.bash_profile
 ```
+## install eksctl
+```sh
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+
+sudo mv -v /tmp/eksctl /usr/local/bin
+```
+Confirm the eksctl command works
+```sh
+eksctl version
+```
+Enable eksctl bash-completion
+```sh
+eksctl completion bash >> ~/.bash_completion
+. /etc/profile.d/bash_completion.sh
+. ~/.bash_completion
+```
