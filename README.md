@@ -1,6 +1,7 @@
 # create eks cluster
 
 ## create an eks cluster through aws cli
+It's highly suggested that the eks cluster is created through aws cli rather than aws console, because there are quite a number of dependencies that makes the cluster creation through console a mission impossibile.
 Create an eksctl deployment file (eksworkshop.yaml) use in creating your cluster using the following syntax:
 ```yaml
 cat << EOF > eksworkshop.yaml
