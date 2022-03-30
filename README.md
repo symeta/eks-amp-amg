@@ -10,7 +10,7 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: eksworkshop-eksctl
+  name: demo-eks
   region: ${AWS_REGION}
   version: "1.19"
 
@@ -33,9 +33,9 @@ secretsEncryption:
 EOF
 ```
 create the eks cluster
-```shell
+```sh
 eksctl create cluster -f eksworkshop.yaml
-
+```
 the creation process is shown as below. it takes around 15 minutes to finish the cluster creation
 
 <img width="1155" alt="Screen Shot 2022-03-30 at 3 25 50 PM" src="https://user-images.githubusercontent.com/97269758/160796355-c0b7b17e-fa74-4f8c-ab04-8fb3fa4191ca.png">
