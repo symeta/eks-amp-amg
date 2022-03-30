@@ -25,10 +25,10 @@ We will simply leave the option to Current account and select all the Data sourc
 In the Review screen, take a look at the options and click on Create workspace
 ## Add Users
 Once the AMG workspace turns to ACTIVE, click on Assign user and select the SSO user created in previously. Click Assign user
-![image](https://user-images.githubusercontent.com/97269758/160515876-358e3c91-9e62-4f46-959b-90f661ebf902.png)
+<img width="1405" alt="Screen Shot 2022-03-30 at 4 19 13 PM" src="https://user-images.githubusercontent.com/97269758/160797359-5b6422ae-11c0-405a-b4d5-c3459693d622.png">
 
 By default, all newly assigned users are added as Viewers that only provides read-only permissions on Grafana. To make the user as Administrator, select the user under Users and select Make admin. Now you should see that the user is an Administrator.
-![image](https://user-images.githubusercontent.com/97269758/160515905-4f1744c1-125b-4fd1-b423-59f94a65013b.png)
+<img width="1404" alt="Screen Shot 2022-03-30 at 4 19 31 PM" src="https://user-images.githubusercontent.com/97269758/160797431-71022592-cd46-4f5e-9fcb-dc0751b44fa0.png">
 
 ## Login to AMG workspace
 Click on the Grafana workspace URL in the Summary section
