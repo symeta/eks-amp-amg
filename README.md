@@ -39,9 +39,10 @@ In your Cloud9 environment, click Tools / Preview / Preview Running Application.
 ```
 In the web UI, you can see all the targets and metrics being monitored by Prometheus:
 <img width="1014" alt="Screen Shot 2022-03-30 at 4 06 21 PM" src="https://user-images.githubusercontent.com/97269758/160797029-de4f25e1-5e30-4054-bffd-16dc29759ee1.png">
-use aws cli to create the managed prometheus workspace using the following command:
+use aws cli to create the managed prometheus workspace using the following command. the command will trigger a cloudformation stack at the backend. the cloudformation stack will create an IAM role named EKS-AMP-ServiceAccount-Role.
+
 ```shell
-aws amp create-workspace --alias demo-prometheus --region us-west-2
+aws amp create-workspace --alias {amp workspace name} --region {aws region name}
 ```
 
 The shell script shown below can be used to execute the following actions after substituting the placeholder variable YOUR_EKS_CLUSTER_NAME with the name of your Amazon EKS cluster.
@@ -225,14 +226,15 @@ pushgateway:
 
 ```
 
-Execute the following command to install the Prometheus server configuration and configure the remoteWrite endpoint
+Execute the following command to install the Prometheus server configuration and configure the remoteWrite endpoint. It's highly recommended that each commmand at the right hand side of the "=" signal be executed separatedly to make sure that the result is correct.
+
+
 ```sh
 export SERVICE_ACCOUNT_IAM_ROLE=EKS-AMP-ServiceAccount-Role
 export SERVICE_ACCOUNT_IAM_ROLE_ARN=$(aws iam get-role --role-name $SERVICE_ACCOUNT_IAM_ROLE --query 'Role.Arn' --output text)
-WORKSPACE_ID=$(aws amp list-workspaces --alias eks-workshop | jq .workspaces[0].workspaceId -r)
+WORKSPACE_ID=$(aws amp list-workspaces --alias {amp workspace name} | jq .workspaces[0].workspaceId -r)
 helm install prometheus-for-amp prometheus-community/prometheus -n prometheus -f ./amp_ingest_override_values.yaml \
 --set serviceAccounts.server.annotations."eks\.amazonaws\.com/role-arn"="${SERVICE_ACCOUNT_IAM_ROLE_ARN}" \
 --set server.remoteWrite[0].url="https://aps-workspaces.${AWS_REGION}.amazonaws.com/workspaces/${WORKSPACE_ID}/api/v1/remote_write" \
 --set server.remoteWrite[0].sigv4.region=${AWS_REGION}
-
 ```
