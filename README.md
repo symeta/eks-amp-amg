@@ -86,11 +86,11 @@ git clone https://github.com/aws-containers/ecsdemo-crystal.git
 ```
 ## Create a CMK for the EKS cluster to use when encrypting your Kubernetes secrets
 ```sh
-aws kms create-alias --alias-name alias/{aws eks cluster name} --target-key-id $(aws kms create-key --query KeyMetadata.Arn --output text)
+aws kms create-alias --alias-name alias/<aws eks cluster name> --target-key-id $(aws kms create-key --query KeyMetadata.Arn --output text)
 ```
 ## retrieve the ARN of the CMK to input into the create cluster command.
 ```sh
-export MASTER_ARN=$(aws kms describe-key --key-id alias/{aws eke cluster name} --query KeyMetadata.Arn --output text)
+export MASTER_ARN=$(aws kms describe-key --key-id alias/<aws eke cluster name> --query KeyMetadata.Arn --output text)
 ```
 ## save the MASTER_ARN environment variable into the bash_profile
 ```sh
