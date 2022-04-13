@@ -47,7 +47,7 @@ kubectl completion bash >>  ~/.bash_completion
 
 ## create an IAM role for the EC2 instance
 <img width="1170" alt="Screen Shot 2022-03-30 at 4 51 16 PM" src="https://user-images.githubusercontent.com/97269758/160792010-0152073a-1a00-4f61-a328-0f5ab4897a69.png">
-change the role of cloud9 ec2 instance:
+change the role of the ec2 instance:
 <img width="592" alt="Screen Shot 2022-03-30 at 4 53 23 PM" src="https://user-images.githubusercontent.com/97269758/160792169-beb1dee7-594e-4fbb-9636-ad9e2639e9cf.png">
 
 ## configure aws cli with current region as default
