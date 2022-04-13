@@ -139,6 +139,8 @@ secretsEncryption:
   keyARN: ${MASTER_ARN}
 EOF
 ```
+*Note: Make sure that all the parameters have valid values in the eksworkshop.yaml file*
+
 create the eks cluster
 ```sh
 eksctl create cluster -f eksworkshop.yaml
