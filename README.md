@@ -117,7 +117,7 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: demo-eks
+  name: <aws eks cluster name>
   region: ${AWS_REGION}
   version: "1.19"
 
