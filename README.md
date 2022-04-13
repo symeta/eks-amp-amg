@@ -3,6 +3,11 @@
 # preparation
 
 ## Create an EC2 instance to be the client to create the EKS cluster
+make sure that the EC2 instance holds the credentials that enables it to get access to the relevant resources.
+```sh
+aws configure
+```
+input the ak,sk,region code, respectively following the command line guide.
 
 ## install kubectl
 ```sh
