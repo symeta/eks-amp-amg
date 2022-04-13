@@ -126,7 +126,7 @@ availabilityZones: ["${AZS[0]}", "${AZS[1]}", "${AZS[2]}"]
 managedNodeGroups:
 - name: nodegroup
   desiredCapacity: 3
-  instanceType: t3.small
+  instanceType: c5.large
   ssh:
     enableSsm: true
 
